@@ -1,59 +1,103 @@
 package com.binotify.soap;
 
+import jakarta.annotation.Resource;
 import jakarta.jws.WebService;
+import jakarta.xml.ws.WebServiceContext;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 @WebService(endpointInterface = "com.binotify.soap.SubscriptionService")
 public class SubscriptionServiceImpl implements SubscriptionService {
+    protected static Properties prop = new Properties();
+    @Resource
+    WebServiceContext context;
+
     @Override
-    public String createSub(int creator_id, int subscriber_id) {
+    public Subscription createSub(String apiKey, int creator_id, int subscriber_id) {
+        if (!apiKey.equals(prop.getProperty("api.key"))) {
+            return null;
+        }
+        Subscription sub = new Subscription();
+        sub.setCreator_id(creator_id);
+        sub.setSubscriber_id(subscriber_id);
+        sub.setStatus(Status.PENDING);
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/binotifysoap?autoReconnect=true&useSSL=false", "root", "password");
-            PreparedStatement ps;
-            ps = conn.prepareStatement("INSERT INTO subscription (creator_id, subscriber_id) VALUES (?, ?)");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + prop.getProperty("db.name") + "?allowPublicKeyRetrieval=true&useSSL=false", prop.getProperty("db.user"), prop.getProperty("db.password"));
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO subscription (creator_id, subscriber_id) VALUES (?, ?)");
             ps.setInt(1, creator_id);
             ps.setInt(2, subscriber_id);
             ps.executeUpdate();
+
+            // Logger
+            PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
+            ps2.setString(1, "Create subscription");
+            ps2.setString(2, "localhost");
+            ps2.setString(3, "/subscription");
+            ps2.executeUpdate();
+            conn.close();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return "Subscription created";
+        return sub;
     }
 
     @Override
-    public String updateStatus(int creator_id, int subscriber_id, Status status) {
+    public Subscription updateStatus(String apiKey, int creator_id, int subscriber_id, Status status) {
+        if (!apiKey.equals(prop.getProperty("api.key"))) {
+            return null;
+        }
+        Subscription sub = new Subscription();
+        sub.setCreator_id(creator_id);
+        sub.setSubscriber_id(subscriber_id);
+        sub.setStatus(status);
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/binotifysoap?autoReconnect=true&useSSL=false", "root", "password");
-            PreparedStatement ps;
-            ps = conn.prepareStatement("UPDATE subscription SET status = ? WHERE creator_id = ? AND subscriber_id = ?");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + prop.getProperty("db.name") + "?allowPublicKeyRetrieval=true&useSSL=false", prop.getProperty("db.user"), prop.getProperty("db.password"));
+            PreparedStatement ps = conn.prepareStatement("UPDATE subscription SET status = ? WHERE creator_id = ? AND subscriber_id = ?");
             ps.setString(1, status.toString());
             ps.setInt(2, creator_id);
             ps.setInt(3, subscriber_id);
             ps.executeUpdate();
+            // Logger
+            PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
+            ps2.setString(1, "Update subscription status");
+            ps2.setString(2, "localhost");
+            ps2.setString(3, "/subscription");
+            ps2.executeUpdate();
+            conn.close();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return "Status updated";
+        return sub;
     }
 
     @Override
-    public Status getStatus(int creator_id, int subscriber_id) {
+    public Status getStatus(String apiKey, int creator_id, int subscriber_id) {
+        if (!apiKey.equals(prop.getProperty("api.key"))) {
+            return null;
+        }
         Status status = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/binotifysoap?autoReconnect=true&useSSL=false", "root", "password");
-            PreparedStatement ps;
-            ps = conn.prepareStatement("SELECT status FROM subscription WHERE creator_id = ? AND subscriber_id = ?");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + prop.getProperty("db.name") + "?allowPublicKeyRetrieval=true&useSSL=false", prop.getProperty("db.user"), prop.getProperty("db.password"));
+            PreparedStatement ps = conn.prepareStatement("SELECT status FROM subscription WHERE creator_id = ? AND subscriber_id = ?");
             ps.setInt(1, creator_id);
             ps.setInt(2, subscriber_id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 status = Status.valueOf(rs.getString("status"));
             }
+            // Logger
+            PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
+            ps2.setString(1, "Get status");
+            ps2.setString(2, "localhost");
+            ps2.setString(3, "/subscription");
+            ps2.executeUpdate();
+            conn.close();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -61,11 +105,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public ArrayList<Subscription> getSubs() {
-        ArrayList<Subscription> subs = new ArrayList<>();
+    public List<Subscription> getSubs(String apiKey) {
+        if (!apiKey.equals(prop.getProperty("api.key"))) {
+            return null;
+        }
+        List<Subscription> subs = new ArrayList<>();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/binotifysoap?autoReconnect=true&useSSL=false", "root", "password");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + prop.getProperty("db.name") + "?allowPublicKeyRetrieval=true&useSSL=false", prop.getProperty("db.user"), prop.getProperty("db.password"));
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM subscription");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -75,6 +122,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 sub.setStatus(Status.valueOf(rs.getString("status")));
                 subs.add(sub);
             }
+            // Logger
+            PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
+            ps2.setString(1, "Get subscriptions");
+            ps2.setString(2, "localhost");
+            ps2.setString(3, "/subscription");
+            ps2.executeUpdate();
+            conn.close();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
