@@ -1,9 +1,11 @@
 package com.binotify.soap;
 
+import com.sun.net.httpserver.HttpExchange;
 import jakarta.annotation.Resource;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceContext;
 
+import java.net.InetSocketAddress;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         sub.setCreator_id(creator_id);
         sub.setSubscriber_id(subscriber_id);
         sub.setStatus(Status.PENDING);
+        HttpExchange exchange = (HttpExchange) context.getMessageContext().get("com.sun.xml.ws.http.exchange");
+        InetSocketAddress remoteAddress = exchange.getRemoteAddress();
+        String remoteHost = String.valueOf(remoteAddress.getAddress());
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + prop.getProperty("db.name") + "?allowPublicKeyRetrieval=true&useSSL=false", prop.getProperty("db.user"), prop.getProperty("db.password"));
@@ -35,7 +40,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             // Logger
             PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
             ps2.setString(1, "Create subscription");
-            ps2.setString(2, "localhost");
+            ps2.setString(2, remoteHost);
             ps2.setString(3, "/subscription");
             ps2.executeUpdate();
             conn.close();
@@ -54,6 +59,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         sub.setCreator_id(creator_id);
         sub.setSubscriber_id(subscriber_id);
         sub.setStatus(status);
+        HttpExchange exchange = (HttpExchange) context.getMessageContext().get("com.sun.xml.ws.http.exchange");
+        InetSocketAddress remoteAddress = exchange.getRemoteAddress();
+        String remoteHost = String.valueOf(remoteAddress.getAddress());
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + prop.getProperty("db.name") + "?allowPublicKeyRetrieval=true&useSSL=false", prop.getProperty("db.user"), prop.getProperty("db.password"));
@@ -65,7 +73,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             // Logger
             PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
             ps2.setString(1, "Update subscription status");
-            ps2.setString(2, "localhost");
+            ps2.setString(2, remoteHost);
             ps2.setString(3, "/subscription");
             ps2.executeUpdate();
             conn.close();
@@ -80,6 +88,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if (!apiKey.equals(prop.getProperty("api.key"))) {
             return null;
         }
+        HttpExchange exchange = (HttpExchange) context.getMessageContext().get("com.sun.xml.ws.http.exchange");
+        InetSocketAddress remoteAddress = exchange.getRemoteAddress();
+        String remoteHost = String.valueOf(remoteAddress.getAddress());
         Status status = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -94,7 +105,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             // Logger
             PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
             ps2.setString(1, "Get status");
-            ps2.setString(2, "localhost");
+            ps2.setString(2, remoteHost);
             ps2.setString(3, "/subscription");
             ps2.executeUpdate();
             conn.close();
@@ -110,6 +121,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             return null;
         }
         List<Subscription> subs = new ArrayList<>();
+        HttpExchange exchange = (HttpExchange) context.getMessageContext().get("com.sun.xml.ws.http.exchange");
+        InetSocketAddress remoteAddress = exchange.getRemoteAddress();
+        String remoteHost = String.valueOf(remoteAddress.getAddress());
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + prop.getProperty("db.name") + "?allowPublicKeyRetrieval=true&useSSL=false", prop.getProperty("db.user"), prop.getProperty("db.password"));
@@ -125,7 +139,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             // Logger
             PreparedStatement ps2 = conn.prepareStatement("INSERT INTO logging (description, IP, endpoint) VALUES (?, ?, ?)");
             ps2.setString(1, "Get subscriptions");
-            ps2.setString(2, "localhost");
+            ps2.setString(2, remoteHost);
             ps2.setString(3, "/subscription");
             ps2.executeUpdate();
             conn.close();
