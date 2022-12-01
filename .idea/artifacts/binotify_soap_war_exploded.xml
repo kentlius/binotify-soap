@@ -14,9 +14,32 @@
           <element id="module-output" name="binotify-soap" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: jakarta.servlet:jakarta.servlet-api:5.0.0" />
+          <element id="library" level="project" name="Maven: jakarta.xml.ws:jakarta.xml.ws-api:4.0.0" />
+          <element id="library" level="project" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:4.0.0" />
+          <element id="library" level="project" name="Maven: jakarta.xml.soap:jakarta.xml.soap-api:3.0.0" />
           <element id="library" level="project" name="Maven: com.mysql:mysql-connector-j:8.0.31" />
           <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.19.4" />
           <element id="library" level="project" name="Maven: jakarta.annotation:jakarta.annotation-api:2.1.0" />
+          <element id="library" level="project" name="Maven: com.sun.xml.ws:rt:4.0.0" />
+          <element id="library" level="project" name="Maven: com.sun.xml.ws:policy:4.0.0" />
+          <element id="library" level="project" name="Maven: org.glassfish.jaxb:jaxb-runtime:4.0.0" />
+          <element id="library" level="project" name="Maven: org.glassfish.jaxb:jaxb-core:4.0.0" />
+          <element id="library" level="project" name="Maven: org.glassfish.jaxb:txw2:4.0.0" />
+          <element id="library" level="project" name="Maven: com.sun.istack:istack-commons-runtime:4.1.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.ha:ha-api:3.1.13" />
+          <element id="library" level="project" name="Maven: org.glassfish.external:management-api:3.2.3" />
+          <element id="library" level="project" name="Maven: org.glassfish.gmbal:gmbal-api-only:4.0.3" />
+          <element id="library" level="project" name="Maven: org.jvnet.staxex:stax-ex:2.1.0" />
+          <element id="library" level="project" name="Maven: com.sun.xml.stream.buffer:streambuffer:2.1.0" />
+          <element id="library" level="project" name="Maven: org.jvnet.mimepull:mimepull:1.10.0" />
+          <element id="library" level="project" name="Maven: jakarta.mail:jakarta.mail-api:2.1.0" />
+          <element id="library" level="project" name="Maven: org.eclipse.angus:angus-activation:1.0.0" />
+          <element id="library" level="project" name="Maven: org.eclipse.angus:angus-mail:1.0.0" />
+          <element id="library" level="project" name="Maven: com.sun.xml.messaging.saaj:saaj-impl:3.0.0" />
+          <element id="library" level="project" name="Maven: com.fasterxml.woodstox:woodstox-core:6.2.8" />
+          <element id="library" level="project" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" />
+          <element id="library" level="project" name="Maven: jakarta.activation:jakarta.activation-api:2.1.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">
