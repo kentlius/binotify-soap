@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class SubscriptionServicePublisher {
     public static void main(String[] args) {
-        Endpoint.publish("http://localhost:8080/subscription", new SubscriptionServiceImpl());
+        Endpoint.publish("http://localhost:8000/subscription", new SubscriptionServiceImpl());
 
         try {
             String configFilePath = "src/main/resources/config.properties";
